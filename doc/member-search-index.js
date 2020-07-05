@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.example.demo.aop.business.data","c":"Dao3","l":"Dao3()","url":"%3Cinit%3E()"},{"p":"com.example.demo.aop.business.data","c":"Dao3","l":"retrieveSomething()"}]
