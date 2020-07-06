@@ -20,10 +20,15 @@ public class CustomerSerrvicesImlp implements CustomerSerrvices {
 		Customer customer = customerdao.findById(id);
 		return customer;
 	}
+	@Override
+	public Customer findByUsserName(String username) {
+		Customer customer = customerdao.findByUsserName(username);
+		return customer;
+	}
 
 	@Override
 	public List<Customer> findAll() {
-		List<Customer> customer = customerdao.findAll();// TODO Auto-generated method stub
+		List<Customer> customer = customerdao.findAll();
 		return customer;
 	}
 
@@ -43,10 +48,6 @@ public class CustomerSerrvicesImlp implements CustomerSerrvices {
 		return "Coronavirus - Restaurants, Hotels To Be Closed Till October 15? Government's Fact Check";
 	}
 
-	@Override
-	public Customer retrieveCustomerJsonObj() {
-		Customer customer1 = new Customer(101L,"Dilip", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(), "m.ctli.link@gmail.com1","pwd1");
-		
-		return customer1;
-	}
+
+
 }

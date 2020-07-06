@@ -47,14 +47,15 @@ public class CustomerController {
 	
 	@PostMapping(value = "/customer", consumes = "application/json", produces = "application/json")//
 	public <T> ResponseEntity<T> createPerson(@RequestBody Customer customer) {
+		System.out.println("response 201 The request has been fulfilled and resulted in a new resource being created");
 		Customer resCustomer = customerSerrvices.saveCustomer(customer);
 		if (resCustomer != null) {
 			LOGGER.info("response 201 The request has been fulfilled and resulted in a new resource being created");
-			Message message = new Message("Records created successfully", HttpStatus.CREATED);
+			Message message = new Message("Records created successfully-201", HttpStatus.CREATED);
 			return (ResponseEntity<T>) new ResponseEntity<Customer>(resCustomer, HttpStatus.CREATED); 
 																										
 		} else {
-			Message message = new Message("The request cannot be fulfilled due to bad request", HttpStatus.BAD_REQUEST);
+			Message message = new Message("The request cannot be fulfilled due to bad request - 400", HttpStatus.BAD_REQUEST);
 			LOGGER.info("response 400 bad request when password does not fit");
 			return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message); 
 																									
@@ -71,26 +72,33 @@ public class CustomerController {
 	 * @param id
 	 * @return
 	 */
-	
-	@GetMapping(value = "/customer/{id}", produces = "application/json")
+	@GetMapping(value = "/customer/{username}", produces = "application/json")
+	public <T> ResponseEntity<T> findByUsserName(@PathVariable String username) {
+		LOGGER.info("Customer Find By username");
+		Customer customer = customerSerrvices.findByUsserName(username);
+		if (customer != null) {
+			LOGGER.info("The request has been accepted for processing");
+			System.out.println("WHAT ABOUT USER-2- AVAILABLE");
+			return (ResponseEntity<T>) new ResponseEntity<Customer>(customer, HttpStatus.OK);
+		} else {
+			LOGGER.info("No entity found for query "+username);
+			Message message = new Message("The requested resource could not be found. Usern Name: "+username, HttpStatus.NOT_FOUND);
+			return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+		}
+	}
+
+	@GetMapping(value = "/customers/{id}", produces = "application/json")
 	public <T> ResponseEntity<T> findById(@PathVariable Long id) {
 		LOGGER.info("Customer Find By Id");
 		Customer customer = customerSerrvices.findById(id);
 		if (customer != null) {
 			LOGGER.info("The request has been accepted for processing");
 			return (ResponseEntity<T>) new ResponseEntity<Customer>(customer, HttpStatus.OK);
-		} else{
+		} else {
 			LOGGER.info("The request has been not accepted for processing");
 			Message message = new Message("The requested resource could not be found.", HttpStatus.NOT_FOUND);
 			return (ResponseEntity<T>) ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
 		}
-	}
-
-	@GetMapping(value = "/customers/{id}")
-	public Customer findByIds(@PathVariable Long id) {
-		LOGGER.info("Customer Find By Id");
-		Customer customer = customerSerrvices.findById(id);
-		return customer;
 	}
 
 	@GetMapping("/hello")
@@ -99,17 +107,9 @@ public class CustomerController {
 		return helloString;
 	}
 
-	@GetMapping(value = "/customer/json", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Customer retrieveCustomer() {
-		Customer customer =customerSerrvices.retrieveCustomerJsonObj();
-		return customer;
-	}
-
 	@GetMapping("/allcustomer")
 	public List<Customer> retrieveAllCustomer() {
 		return customerSerrvices.findAll();
 	}
-	
-	
 
 }

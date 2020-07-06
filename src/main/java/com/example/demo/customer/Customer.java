@@ -18,7 +18,7 @@ public class Customer {
 	@GeneratedValue
 	private Long id;
 
-	@Column(name = "Firstname", length = 50)
+	@Column(name = "Firstname", length = 50, unique=true,  nullable = false)
 	private String firstname;
 
 	@Column(name = "Lastname", length = 50)

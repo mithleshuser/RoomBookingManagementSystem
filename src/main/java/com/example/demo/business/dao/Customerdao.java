@@ -12,5 +12,7 @@ public interface Customerdao {
 
 	boolean saveCustomer(Customer customer);
 
+	Customer findByUsserName(String username);
+
 
 }

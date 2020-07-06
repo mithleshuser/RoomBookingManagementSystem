@@ -5,17 +5,30 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import com.example.demo.customer.Customer;
 
 @Repository
+@Transactional
 public class CustomerdaoImpl implements Customerdao {
+	@PersistenceContext
+	@Autowired
+	private EntityManager entityManager;
+	
 	private static Customer customer1;
 	private static Customer customer2;
 	private static Customer customer3;
 	private static HashMap<Long, Customer> customerContainer;
 	static {
+		System.out.println("DAo static loading---");
 		Customer customer1 = new Customer(101L,"Dilip", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(), "m.ctli.link@gmail.com1","pwd1");
 		Customer customer2 = new Customer(102L,"mukesh", "kumar", new GregorianCalendar(1990, 12, 25).getTime(), "m.ctli.link2@gmail.com","pwd2");
 		Customer customer3 = new Customer(103L,"rajesh", "kumar", new GregorianCalendar(1990, 12, 25).getTime(), "m.ctli.link3@gmail.com","pwd3");
@@ -32,7 +45,7 @@ public class CustomerdaoImpl implements Customerdao {
 		customerContainer.put(106L, customer6);
 		customerContainer.put(107L, customer7);
 	}
-	@Override
+/*	@Override
 	public boolean saveCustomer(Customer customer) {
 		long c_id = customer.getId();
 
@@ -43,16 +56,66 @@ public class CustomerdaoImpl implements Customerdao {
 		}
 		return true;
 	}
+*/
+	@Override
+	public boolean saveCustomer(Customer customer) {
+		System.out.println("DAO");
+
+		boolean isSave = true;
+		long saveCustermerID = 0;
+		Session session = null;
+		try {
+			session = entityManager.unwrap(Session.class);
+			saveCustermerID = (long) session.save(customer);
+			session.flush();
+
+		} catch (Exception e) {
+			System.out.println("added roles in role table " + (int) saveCustermerID);
+
+		} finally {
+
+			session.clear();
+			session.close();
+		}
+		if (saveCustermerID <= 0) {
+			isSave = false;
+		}
+		System.out.println("isSave  : " + isSave);
+		return isSave;
+	}
 
 	@Override
 	public Customer findById(Long id) {
 		if (customerContainer.containsKey(id)) {
 			Customer customer = customerContainer.get(id);
 			return customer;
-		} 
+		}
 		return null;
 	}
-
+	
+	@Override
+	public Customer findByUsserName(String username){
+		System.out.println("DAO findByUsserName");
+		
+		Customer customer = null;
+		String sql = "Select e from " + Customer.class.getName() + " e " //
+				+ " Where e.firstname = :username ";
+		Query query = entityManager.createQuery(sql, Customer.class);
+		query.setParameter("username", username);
+		
+		try{
+			customer = (Customer) query.getSingleResult();
+		}
+		catch (NoResultException nre){
+		// I Ignore this because as per our this logic is ok!
+		}
+		if (customer != null) {
+			System.out.println("Customer has been found in database .. ");
+			return customer;
+		}
+		return customer;
+	}
+	
 	@Override
 	public List<Customer> findAll() {
 		List<Customer> customer = new ArrayList<>();

@@ -3,6 +3,7 @@ package com.example.demo.RestController;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -20,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.demo.customer.Customer;
@@ -50,9 +53,7 @@ public class CustomerControllerTests {
 
 	@Test
 	public void saveCustomerAPIStatus() throws Exception {
-
-		Customer customer = new Customer(111L, "TestingMith", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(),
-				"m.ctli.link@gmail.com1", "pwd1");
+		Customer customer = new Customer(111L, "TestingMith", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(),"m.ctli.link@gmail.com1", "pwd1");
 		when(customerSerrvices.saveCustomer(customer)).thenReturn(customer);
 		ResponseEntity<Object> customer1 = customerController.createPerson(customer);
 		assertNotNull(customer1);
@@ -61,10 +62,10 @@ public class CustomerControllerTests {
 
 	@Test
 	public void getCustomerAPIStatusFindById() throws Exception {
-		Customer customer = new Customer(101L, "Dilip", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(),
+		Customer customer = new Customer(3l, "mukesh", "Kumar", new GregorianCalendar(1990, 12, 25).getTime(),
 				"m.ctli.link@gmail.com1", "pwd1");
-		when(customerSerrvices.findById(anyLong())).thenReturn(customer);
-		ResponseEntity<Object> customer2 = customerController.findById(101L);
+		when(customerSerrvices.findByUsserName(anyString())).thenReturn(customer);
+		ResponseEntity<Object> customer2 = customerController.findByUsserName("mukesh");
 		assertNotNull(customer2.getStatusCode());
 		assertEquals(HttpStatus.OK, customer2.getStatusCode());
 	}
@@ -86,6 +87,7 @@ public class CustomerControllerTests {
 		this.mockMvc.perform(get("/request/api/customer/json"))
 		.andDo(print())
 		.andExpect(status().isNotFound());
+		//.andExpect(status().isOk());
 	}
 
 

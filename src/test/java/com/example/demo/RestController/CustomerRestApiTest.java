@@ -26,7 +26,7 @@ public class CustomerRestApiTest {
 
     @Test
     public void testCustomerFetchById() {
-        get("/request/api/customer/101")
+        get("/request/api/customers/101")
         .then()
         .body("id", equalTo(101))
         .body("firstname", equalTo("Dilip"))
@@ -37,12 +37,13 @@ public class CustomerRestApiTest {
     
     @Test
     public void testCustomerFetchesSuccess() {
-        get("/request/api/customers/101")
+        get("/request/api/customer/mukesh")
         .then()
-        .body("id", equalTo(101))
-        .body("firstname", equalTo("Dilip"))
-        .body("lastname", equalTo("Kumar"))
-        .body("email", equalTo("m.ctli.link@gmail.com1"));
+        .body("id", equalTo(1))
+        .body("firstname", equalTo("mukesh"))
+        .body("lastname", equalTo("arya"))
+        .body("email", equalTo("mukesh@gmail.com"))
+        .body("password", equalTo("password3"));
     }
     
     

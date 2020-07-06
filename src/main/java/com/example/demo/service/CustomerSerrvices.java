@@ -12,7 +12,7 @@ public interface CustomerSerrvices {
 	List<Customer> findAll();
 	Customer saveCustomer(Customer customer);
 	String getGovernmentNews();
-	Customer retrieveCustomerJsonObj();
+	Customer findByUsserName(String username);
 	
 	
 	//Customer create(Customer account);
